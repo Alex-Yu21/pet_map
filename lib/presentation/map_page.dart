@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -17,13 +19,41 @@ class _MapPageState extends State<MapPage> {
     target: Point(latitude: 59.9343, longitude: 30.3351),
     zoom: 12,
   );
-  late String lat;
-  late String long;
+  YandexMapController? _mapController;
+  StreamSubscription<Position>? _posSub;
+  double? lat;
+  double? long;
+
+  void _liveLocation() {
+    const locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 100,
+    );
+    _posSub = Geolocator.getPositionStream(
+      locationSettings: locationSettings,
+    ).listen((Position position) {
+      setState(() {
+        lat = position.latitude;
+        long = position.longitude;
+      });
+      if (_mapController != null) {
+        _repo.moveCamera(
+          _mapController!,
+          CameraPosition(
+            target: Point(
+              latitude: position.latitude,
+              longitude: position.longitude,
+            ),
+            zoom: 15,
+          ),
+        );
+      }
+    });
+  }
 
   Future<Position> _getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location service are disabled');
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      return Future.error('Location services are disabled');
     }
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -37,7 +67,13 @@ class _MapPageState extends State<MapPage> {
         'Location permissions are permanently denied, we cannot request permissions',
       );
     }
-    return await Geolocator.getCurrentPosition();
+    return Geolocator.getCurrentPosition();
+  }
+
+  @override
+  void dispose() {
+    _posSub?.cancel();
+    super.dispose();
   }
 
   @override
@@ -48,6 +84,7 @@ class _MapPageState extends State<MapPage> {
           YandexMap(
             zoomGesturesEnabled: true,
             onMapCreated: (controller) async {
+              _mapController = controller;
               await _repo.moveCamera(controller, _initialPosition);
             },
           ),
@@ -55,13 +92,27 @@ class _MapPageState extends State<MapPage> {
             bottom: 30,
             right: 0,
             child: IconButton(
-              onPressed: () {
-                _getCurrentLocation().then((value) {
-                  lat = '${value.latitude}';
-                  long = '${value.longitude}';
+              icon: const Icon(Icons.my_location),
+              onPressed: () async {
+                final pos = await _getCurrentLocation();
+                setState(() {
+                  lat = pos.latitude;
+                  long = pos.longitude;
                 });
+                if (_mapController != null) {
+                  await _repo.moveCamera(
+                    _mapController!,
+                    CameraPosition(
+                      target: Point(
+                        latitude: pos.latitude,
+                        longitude: pos.longitude,
+                      ),
+                      zoom: 15,
+                    ),
+                  );
+                }
+                _liveLocation();
               },
-              icon: Icon(Icons.my_location),
             ),
           ),
         ],
