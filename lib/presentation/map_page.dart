@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:pet_map/domain/map_repository.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 import '../../data/map_repository_impl.dart';
@@ -14,30 +15,25 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  final _repo = MapRepositoryImpl();
+  final MapRepository _repo = MapRepositoryImpl();
   final _initialPosition = const CameraPosition(
     target: Point(latitude: 59.9343, longitude: 30.3351),
     zoom: 12,
   );
   YandexMapController? _mapController;
   StreamSubscription<Position>? _posSub;
-  double? lat;
-  double? long;
 
   void _liveLocation() {
+    _posSub?.cancel();
     const locationSettings = LocationSettings(
       accuracy: LocationAccuracy.high,
       distanceFilter: 100,
     );
     _posSub = Geolocator.getPositionStream(
       locationSettings: locationSettings,
-    ).listen((Position position) {
-      setState(() {
-        lat = position.latitude;
-        long = position.longitude;
-      });
+    ).listen((Position position) async {
       if (_mapController != null) {
-        _repo.moveCamera(
+        await _repo.moveCamera(
           _mapController!,
           CameraPosition(
             target: Point(
@@ -95,10 +91,6 @@ class _MapPageState extends State<MapPage> {
               icon: const Icon(Icons.my_location),
               onPressed: () async {
                 final pos = await _getCurrentLocation();
-                setState(() {
-                  lat = pos.latitude;
-                  long = pos.longitude;
-                });
                 if (_mapController != null) {
                   await _repo.moveCamera(
                     _mapController!,
