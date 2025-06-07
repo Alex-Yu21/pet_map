@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pet_map/presentation/screens/map_page.dart';
+import 'package:pet_map/presentation/views/root_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +14,7 @@ class PetMapApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ProviderScope(child: MapPage()),
+      home: ProviderScope(child: RootView()),
     );
   }
 }

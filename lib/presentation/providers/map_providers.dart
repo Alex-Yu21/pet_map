@@ -9,10 +9,10 @@ final mapRepoProvider = Provider<MapRepository>((_) => MapRepositoryImpl());
 
 final mapCtrlProvider = StateProvider<YandexMapController?>((_) => null);
 
-final currentPosProvider = FutureProvider.autoDispose<Position>((_) async {
-  return LocationService.getOnce();
-});
+final currentPosProvider = FutureProvider.autoDispose<Position>(
+  (_) => LocationService.getOnce(),
+);
 
-final posStreamProvider = StreamProvider.autoDispose<Position>((_) {
-  return LocationService.stream();
-});
+final posStreamProvider = StreamProvider.autoDispose<Position>(
+  (_) => LocationService.stream(),
+);
