@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:pet_map/presentation/providers/map_providers.dart';
+import 'package:pet_map/presentation/resources/app_dimansions.dart';
+import 'package:pet_map/presentation/views/map_view/widgets/location_button.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class MapView extends ConsumerStatefulWidget {
@@ -55,28 +57,9 @@ class _MapViewState extends ConsumerState<MapView>
           },
         ),
         Positioned(
-          right: 0,
-          bottom: 30,
-          child: IconButton(
-            icon: const Icon(Icons.my_location, size: 46),
-            onPressed: () async {
-              final pos = await ref.read(currentPosProvider.future);
-              final ctrl = ref.read(mapCtrlProvider);
-              if (ctrl != null) {
-                await repo.moveCamera(
-                  ctrl,
-                  CameraPosition(
-                    target: Point(
-                      latitude: pos.latitude,
-                      longitude: pos.longitude,
-                    ),
-                    zoom: 15,
-                  ),
-                );
-              }
-              ref.invalidate(posStreamProvider);
-            },
-          ),
+          right: Paddings.l,
+          bottom: Paddings.xl,
+          child: LocationButton(ref: ref, repo: repo),
         ),
       ],
     );
