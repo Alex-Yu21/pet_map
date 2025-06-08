@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pet_map/domain/map_repository.dart';
+import 'package:pet_map/domain/revositories/map_repository.dart';
 import 'package:pet_map/presentation/providers/map_providers.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';

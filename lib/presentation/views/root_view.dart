@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pet_map/presentation/providers/page_controller_provider.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/map_view/map_view.dart';
+import 'package:pet_map/presentation/views/pets_view/pets_view.dart';
 
 class RootView extends ConsumerWidget {
   const RootView({super.key});
@@ -21,6 +22,7 @@ class RootView extends ConsumerWidget {
       color: Colors.white,
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: PageView(
             controller: ctrl,
             physics: const NeverScrollableScrollPhysics(),
@@ -55,14 +57,5 @@ class RootView extends ConsumerWidget {
         ),
       ),
     );
-  }
-}
-
-class PetsView extends StatelessWidget {
-  const PetsView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Pets'));
   }
 }
