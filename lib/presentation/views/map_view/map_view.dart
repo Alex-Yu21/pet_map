@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:pet_map/presentation/providers/map_providers.dart';
+import 'package:pet_map/di/app_providers.dart';
+import 'package:pet_map/presentation/providers/map_position_providers.dart';
+import 'package:pet_map/presentation/providers/map_ui_providers.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/map_view/widgets/location_button.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
@@ -26,12 +28,13 @@ class _MapViewState extends ConsumerState<MapView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    ref.listen<AsyncValue<Position>>(posStreamProvider, (prev, next) async {
+
+    ref.listen<AsyncValue<Position>>(posStreamProvider, (_, next) {
       next.whenData((pos) async {
         final ctrl = ref.read(mapCtrlProvider);
         if (ctrl != null) {
           await ref
-              .read(mapRepoProvider)
+              .read(mapRepositoryProvider)
               .moveCamera(
                 ctrl,
                 CameraPosition(
@@ -46,7 +49,7 @@ class _MapViewState extends ConsumerState<MapView>
       });
     });
 
-    final repo = ref.read(mapRepoProvider);
+    final repo = ref.read(mapRepositoryProvider);
 
     return Stack(
       children: [
