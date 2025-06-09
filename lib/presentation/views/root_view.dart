@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pet_map/presentation/providers/page_controller_provider.dart';
+import 'package:pet_map/presentation/providers/nav_ui_providers.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/map_view/map_view.dart';
 import 'package:pet_map/presentation/views/pets_view/pets_view.dart';
 
 class RootView extends ConsumerStatefulWidget {
   const RootView({super.key});
+
   @override
   ConsumerState<RootView> createState() => _RootViewState();
 }
@@ -55,7 +56,10 @@ class _BottomBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return NavigationBarTheme(
-      data: NavigationBarThemeData(backgroundColor: Color(0xFFF3F3F3)),
+      data: NavigationBarThemeData(
+        indicatorColor: Colors.grey.shade300,
+        backgroundColor: const Color(0xFFF3F3F3),
+      ),
       child: NavigationBar(
         selectedIndex: index,
         onDestinationSelected:
