@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pet_map/domain/entities/pet.dart';
-import 'package:pet_map/presentation/providers/pet_providers.dart';
+import 'package:pet_map/presentation/providers/pets_ui_providers.dart';
+import 'package:pet_map/presentation/resources/app_dimansions.dart';
+import 'package:pet_map/presentation/views/pets_view/widgets/add_button.dart';
+import 'package:pet_map/presentation/views/pets_view/widgets/pet_card.dart';
 
 class PetsView extends ConsumerWidget {
   const PetsView({super.key});
@@ -13,32 +15,41 @@ class PetsView extends ConsumerWidget {
     return petsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('Ошибка: $e')),
-      data:
-          (pets) => ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: pets.length,
-            itemBuilder: (_, i) => PetCard(pet: pets[i]),
-          ),
-    );
-  }
-}
+      data: (pets) {
+        if (pets.isEmpty) {
+          return Padding(
+            padding: EdgeInsets.all(Paddings.l),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: const [SizedBox(height: 60), AddButton()],
+            ),
+          );
+        }
 
-class PetCard extends StatelessWidget {
-  final Pet pet;
-  const PetCard({required this.pet, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.more_horiz)),
-          const Placeholder(fallbackHeight: 100),
-          Text(pet.name, style: Theme.of(context).textTheme.titleMedium),
-          ElevatedButton(onPressed: () {}, child: const Text('Подробнее')),
-        ],
-      ),
+        return CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.all(Paddings.l),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (ctx, i) => PetCard(pet: pets[i]),
+                  childCount: pets.length,
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: Paddings.l,
+                  right: Paddings.l,
+                  bottom: Paddings.l,
+                ),
+                child: const Center(child: AddButton()),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
