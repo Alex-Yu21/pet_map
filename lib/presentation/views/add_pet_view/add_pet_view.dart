@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_map/domain/entities/pet.dart';
-import 'package:pet_map/presentation/providers/pet_providers.dart';
+import 'package:pet_map/presentation/providers/pets_ui_providers.dart';
 
 class AddPetView extends ConsumerStatefulWidget {
-  const AddPetView({super.key});
+  final Pet? initialPet;
+  const AddPetView({super.key, this.initialPet});
 
   @override
   ConsumerState<AddPetView> createState() => _AddPetViewState();
@@ -12,11 +13,23 @@ class AddPetView extends ConsumerStatefulWidget {
 
 class _AddPetViewState extends ConsumerState<AddPetView> {
   final _formKey = GlobalKey<FormState>();
-
   final _nameCtrl = TextEditingController();
   final _breedCtrl = TextEditingController();
+
   DateTime? _birthDate;
   bool _sterilized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialPet != null) {
+      final p = widget.initialPet!;
+      _nameCtrl.text = p.name;
+      _breedCtrl.text = p.breed ?? '';
+      _birthDate = p.birthDate;
+      _sterilized = p.isSterilized;
+    }
+  }
 
   @override
   void dispose() {
@@ -29,28 +42,32 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
     final now = DateTime.now();
     final picked = await showDatePicker(
       context: context,
-      initialDate: now,
+      initialDate: _birthDate ?? now,
       firstDate: DateTime(now.year - 30),
       lastDate: now,
     );
     if (picked != null) setState(() => _birthDate = picked);
   }
 
-  void _save() async {
+  Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
-    await ref
-        .read(petControllerProvider)
-        .addPet(
-          Pet(
-            name: _nameCtrl.text.trim(),
-            breed:
-                _breedCtrl.text.trim().isEmpty ? null : _breedCtrl.text.trim(),
-            birthDate: _birthDate,
-            photoPath: null, // TODO(photos): сохранить путь к фото
-            isSterilized: _sterilized,
-          ),
-        );
+    final newPet = Pet(
+      id: widget.initialPet?.id,
+      name: _nameCtrl.text.trim(),
+      breed: _breedCtrl.text.trim().isEmpty ? null : _breedCtrl.text.trim(),
+      birthDate: _birthDate,
+      photoPath: null, // TODO: добавить фото
+      isSterilized: _sterilized,
+    );
+
+    final controller = ref.read(petControllerProvider);
+
+    if (widget.initialPet == null) {
+      await controller.addPet(newPet);
+    } else {
+      await controller.updatePet(newPet);
+    }
     Navigator.pop(context);
   }
 
@@ -62,7 +79,7 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
         key: _formKey,
         child: ListView(
           children: [
-            // TODO(photos): кнопка выбора / предпросмотр фото
+            // TODO: кнопка фото
             TextFormField(
               controller: _nameCtrl,
               decoration: const InputDecoration(labelText: 'Имя *'),
@@ -92,7 +109,6 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
               value: _sterilized,
               onChanged: (v) => setState(() => _sterilized = v ?? false),
             ),
-
             const SizedBox(height: 24),
             ElevatedButton(onPressed: _save, child: const Text('Сохранить')),
           ],
