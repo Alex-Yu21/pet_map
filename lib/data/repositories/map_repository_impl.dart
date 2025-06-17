@@ -1,6 +1,5 @@
+import 'package:pet_map/domain/repositories/map_repository.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
-
-import '../../domain/revositories/map_repository.dart';
 
 class MapRepositoryImpl implements MapRepository {
   @override

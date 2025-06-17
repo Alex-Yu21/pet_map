@@ -1,4 +1,4 @@
-import '../../revositories/pet_repository.dart';
+import '../../repositories/pet_repository.dart';
 
 class DeletePet {
   final PetRepository _repo;

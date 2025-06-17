@@ -1,4 +1,4 @@
-import 'package:pet_map/domain/revositories/clinics_repository.dart';
+import 'package:pet_map/domain/repositories/clinics_repository.dart';
 
 class ToggleVisibility {
   final ClinicsRepository _repo;

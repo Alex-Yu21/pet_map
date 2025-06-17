@@ -1,5 +1,5 @@
 import '../../entities/pet.dart';
-import '../../revositories/pet_repository.dart';
+import '../../repositories/pet_repository.dart';
 
 class UpdatePet {
   final PetRepository _repo;

@@ -1,5 +1,5 @@
 import 'package:pet_map/domain/entities/vet_clinic.dart';
-import 'package:pet_map/domain/revositories/clinics_repository.dart';
+import 'package:pet_map/domain/repositories/clinics_repository.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class GetNearbyClinics {

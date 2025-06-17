@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pet_map/domain/revositories/map_repository.dart';
-import 'package:pet_map/domain/revositories/pet_repository.dart';
+import 'package:pet_map/domain/repositories/map_repository.dart';
+import 'package:pet_map/domain/repositories/pet_repository.dart';
 import 'package:pet_map/domain/usecases/location/get_current_position.dart';
 import 'package:pet_map/domain/usecases/location/stream_position.dart';
 import 'package:pet_map/domain/usecases/pet/add_pet.dart';
