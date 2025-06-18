@@ -6,18 +6,13 @@ import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/map_view/map_view.dart';
 import 'package:pet_map/presentation/views/pets_view/pets_view.dart';
 
-class RootView extends ConsumerStatefulWidget {
+final _navKeys = [GlobalKey<NavigatorState>(), GlobalKey<NavigatorState>()];
+
+class RootView extends ConsumerWidget {
   const RootView({super.key});
 
   @override
-  ConsumerState<RootView> createState() => _RootViewState();
-}
-
-class _RootViewState extends ConsumerState<RootView> {
-  final _navKeys = [GlobalKey<NavigatorState>(), GlobalKey<NavigatorState>()];
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final index = ref.watch(navIndexProvider);
 
     return Container(
@@ -31,57 +26,39 @@ class _RootViewState extends ConsumerState<RootView> {
               Navigator(
                 key: _navKeys[0],
                 onGenerateRoute:
-                    (settings) =>
-                        MaterialPageRoute(builder: (_) => const MapView()),
+                    (_) => MaterialPageRoute(builder: (_) => const MapView()),
               ),
               Navigator(
                 key: _navKeys[1],
                 onGenerateRoute:
-                    (settings) =>
-                        MaterialPageRoute(builder: (_) => const PetsView()),
+                    (_) => MaterialPageRoute(builder: (_) => const PetsView()),
               ),
             ],
           ),
-          bottomNavigationBar: _BottomBar(index: index),
+          bottomNavigationBar: NavigationBar(
+            height: 64,
+            selectedIndex: index,
+            onDestinationSelected:
+                (i) => ref.read(navIndexProvider.notifier).state = i,
+            destinations: [
+              NavigationDestination(
+                icon: SvgPicture.asset(
+                  'assets/icons/map.svg',
+                  width: IconSizes.l,
+                ),
+                label: 'карта',
+                selectedIcon: SvgPicture.asset(
+                  'assets/icons/map_pressed.svg',
+                  width: IconSizes.l,
+                ),
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.pets_outlined, size: IconSizes.l),
+                label: 'питомцы',
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
-}
-
-class _BottomBar extends ConsumerWidget {
-  final int index;
-  const _BottomBar({required this.index});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return NavigationBarTheme(
-      data: NavigationBarThemeData(
-        indicatorColor: Colors.grey.shade300,
-        backgroundColor: const Color(0xFFF3F3F3),
-      ),
-      child: NavigationBar(
-        selectedIndex: index,
-        onDestinationSelected:
-            (i) => ref.read(navIndexProvider.notifier).state = i,
-        destinations: [
-          NavigationDestination(
-            icon: Icon(Icons.star_border, size: IconSizes.l),
-            label: 'Карта',
-            selectedIcon: SvgPicture.asset(
-              'assets/icons/star_pressed.svg',
-              width: IconSizes.l,
-            ),
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.star_border, size: IconSizes.l),
-            label: 'Питомцы',
-            selectedIcon: SvgPicture.asset(
-              'assets/icons/star_pressed.svg',
-              width: IconSizes.l,
-            ),
-          ),
-        ],
       ),
     );
   }
