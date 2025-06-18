@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_map/presentation/providers/pets_ui_providers.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/pets_view/widgets/add_button.dart';
@@ -20,8 +21,8 @@ class PetsView extends ConsumerWidget {
           return Padding(
             padding: EdgeInsets.all(Paddings.l),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: const [SizedBox(height: 60), AddButton()],
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [SizedBox(height: 60.h), AddButton()],
             ),
           );
         }
