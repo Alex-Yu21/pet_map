@@ -35,31 +35,49 @@ class RootView extends ConsumerWidget {
               ),
             ],
           ),
-          bottomNavigationBar: NavigationBar(
-            height: 64,
-            selectedIndex: index,
-            onDestinationSelected:
-                (i) => ref.read(navIndexProvider.notifier).state = i,
-            destinations: [
-              NavigationDestination(
-                icon: SvgPicture.asset(
-                  'assets/icons/map.svg',
-                  width: IconSizes.l,
-                ),
-                label: 'карта',
-                selectedIcon: SvgPicture.asset(
-                  'assets/icons/map_pressed.svg',
-                  width: IconSizes.l,
-                ),
+          bottomNavigationBar: Material(
+            elevation: 0,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha((0.08 * 255).round()),
+                    blurRadius: 8,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
               ),
-              NavigationDestination(
-                icon: Icon(Icons.pets_outlined, size: IconSizes.l),
-                label: 'питомцы',
+              child: NavigationBar(
+                height: 64,
+                selectedIndex: index,
+                onDestinationSelected:
+                    (i) => ref.read(navIndexProvider.notifier).state = i,
+                destinations: [
+                  NavigationDestination(
+                    icon: _NavIconSvg('assets/icons/map.svg'),
+                    selectedIcon: _NavIconSvg('assets/icons/map_pressed.svg'),
+                    label: 'карта',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.pets_outlined, size: IconSizes.l),
+                    label: 'питомцы',
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
+}
+
+class _NavIconSvg extends StatelessWidget {
+  const _NavIconSvg(this.path);
+  final String path;
+
+  @override
+  Widget build(BuildContext context) =>
+      SvgPicture.asset(path, width: IconSizes.l);
 }
