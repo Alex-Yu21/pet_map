@@ -9,29 +9,36 @@ class AddButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(40),
-      onTap:
-          () => Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (_) => const AddPetView())),
-      child: Container(
-        width: double.infinity,
-        height: 120.h,
-        decoration: BoxDecoration(
-          color: AppColors.background,
-          border: Border.all(color: AppColors.secondary, width: 2),
-          borderRadius: BorderRadius.circular(64),
-        ),
-        alignment: Alignment.center,
-        child: Container(
-          width: IconSizes.xxl,
-          height: IconSizes.xxl,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.secondary, width: 8),
+    return Material(
+      color: AppColors.background,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(64),
+        side: const BorderSide(color: AppColors.secondary, width: 2),
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(64),
+        splashColor: AppColors.secondary.withAlpha((0.15 * 255).round()),
+        highlightColor: Colors.transparent,
+        onTap:
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AddPetView()),
+            ),
+        child: SizedBox(
+          width: double.infinity,
+          height: 120.h,
+          child: Center(
+            child: Container(
+              width: IconSizes.xxl,
+              height: IconSizes.xxl,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.secondary, width: 8),
+              ),
+              child: Icon(Icons.add, size: 64.h, color: AppColors.secondary),
+            ),
           ),
-          child: Icon(Icons.add, size: 64.h, color: AppColors.secondary),
         ),
       ),
     );
