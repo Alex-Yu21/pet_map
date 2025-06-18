@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pet_map/domain/repositories/map_repository.dart';
 import 'package:pet_map/presentation/providers/map_position_providers.dart';
 import 'package:pet_map/presentation/providers/map_ui_providers.dart';
+import 'package:pet_map/presentation/resources/app_colors.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
@@ -21,10 +22,10 @@ class LocationButton extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.grey.shade300, width: Paddings.xxs),
+        border: Border.all(color: AppColors.secondary, width: Paddings.xxs),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.12),
+            color: AppColors.secondary,
             blurRadius: 12,
             offset: const Offset(0, 2),
           ),
