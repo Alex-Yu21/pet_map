@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_map/domain/entities/pet.dart';
 import 'package:pet_map/presentation/providers/pets_ui_providers.dart';
+import 'package:pet_map/presentation/resources/app_colors.dart';
 
 class AddPetView extends ConsumerStatefulWidget {
   final Pet? initialPet;
@@ -17,13 +19,13 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
   final _breedCtrl = TextEditingController();
 
   DateTime? _birthDate;
-  bool _sterilized = false;
+  bool? _sterilized;
 
   @override
   void initState() {
     super.initState();
-    if (widget.initialPet != null) {
-      final p = widget.initialPet!;
+    final p = widget.initialPet;
+    if (p != null) {
       _nameCtrl.text = p.name;
       _breedCtrl.text = p.breed ?? '';
       _birthDate = p.birthDate;
@@ -52,68 +54,192 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final newPet = Pet(
+    final pet = Pet(
       id: widget.initialPet?.id,
       name: _nameCtrl.text.trim(),
       breed: _breedCtrl.text.trim().isEmpty ? null : _breedCtrl.text.trim(),
       birthDate: _birthDate,
       photoPath: null, // TODO: добавить фото
-      isSterilized: _sterilized,
+      isSterilized: _sterilized!,
     );
 
-    final controller = ref.read(petControllerProvider);
-
-    if (widget.initialPet == null) {
-      await controller.addPet(newPet);
-    } else {
-      await controller.updatePet(newPet);
-    }
-    Navigator.pop(context);
+    final ctrl = ref.read(petControllerProvider);
+    widget.initialPet == null
+        ? await ctrl.addPet(pet)
+        : await ctrl.updatePet(pet);
+    if (mounted) Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Form(
-        key: _formKey,
-        child: ListView(
-          children: [
-            // TODO: кнопка фото
-            TextFormField(
-              controller: _nameCtrl,
-              decoration: const InputDecoration(labelText: 'Имя *'),
-              validator:
-                  (v) => (v == null || v.trim().isEmpty) ? 'Введите имя' : null,
-            ),
-            TextFormField(
-              controller: _breedCtrl,
-              decoration: const InputDecoration(labelText: 'Порода'),
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Дата рождения'),
-              subtitle: Text(
-                _birthDate != null
-                    ? '${_birthDate!.day}.${_birthDate!.month}.${_birthDate!.year}'
-                    : 'не выбрана',
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: EdgeInsets.all(16.w),
+            children: [
+              _PhotoBlock(
+                onPick: () {
+                  /* TODO: фото */
+                },
               ),
-              trailing: IconButton(
-                icon: const Icon(Icons.calendar_month),
-                onPressed: _pickBirthDate,
+              SizedBox(height: 24.h),
+              _Label('кличка'),
+              TextFormField(
+                controller: _nameCtrl,
+                maxLines: null,
+                validator:
+                    (v) =>
+                        v == null || v.trim().isEmpty ? 'Введите кличку' : null,
               ),
-            ),
-            CheckboxListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Стерилизован'),
-              value: _sterilized,
-              onChanged: (v) => setState(() => _sterilized = v ?? false),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(onPressed: _save, child: const Text('Сохранить')),
-          ],
+              SizedBox(height: 16.h),
+              _Label('дата  рождения'),
+              TextFormField(
+                readOnly: true,
+                controller: TextEditingController(
+                  text: _birthDate == null ? '' : _fmt(_birthDate!),
+                ),
+                onTap: _pickBirthDate,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.calendar_month),
+                    onPressed: _pickBirthDate,
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+              _Label('порода'),
+              TextFormField(controller: _breedCtrl),
+              SizedBox(height: 24.h),
+              _Label('стерилизован'),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _RadioLine(
+                    label: 'нет',
+                    value: false,
+                    group: _sterilized,
+                    onChanged: (v) => setState(() => _sterilized = v),
+                  ),
+                  SizedBox(height: 8.h),
+                  _RadioLine(
+                    label: 'да',
+                    value: true,
+                    group: _sterilized,
+                    onChanged: (v) => setState(() => _sterilized = v),
+                  ),
+                ],
+              ),
+              SizedBox(height: 40.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('отмена'),
+                  ),
+                  SizedBox(
+                    width: 160.w,
+                    child: ElevatedButton(
+                      onPressed: _save,
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(46),
+                        shape: const StadiumBorder(),
+                      ),
+                      child: const Text('сохранить'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  String _fmt(DateTime d) =>
+      '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.${d.year}';
+}
+
+class _Label extends StatelessWidget {
+  final String text;
+  const _Label(this.text);
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 4),
+    child: Text(text, style: TextStyle(fontSize: 16.sp)),
+  );
+}
+
+class _PhotoBlock extends StatelessWidget {
+  const _PhotoBlock({required this.onPick});
+  final VoidCallback onPick;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          height: 180.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: AppColors.secondary,
+            image: const DecorationImage(
+              fit: BoxFit.cover,
+              image: AssetImage('assets/images/no_image.png'),
+            ),
+          ),
+        ),
+        Positioned(
+          right: 8,
+          bottom: 8,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: onPick,
+              child: const Padding(
+                padding: EdgeInsets.all(4),
+                child: Icon(Icons.edit, color: Colors.white, size: 20),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RadioLine extends StatelessWidget {
+  const _RadioLine({
+    required this.label,
+    required this.value,
+    required this.group,
+    required this.onChanged,
+  });
+
+  final String label;
+  final bool value;
+  final bool? group;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) => InkWell(
+    onTap: () => onChanged(value),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(label, style: TextStyle(fontSize: 16.sp)),
+        Radio<bool>(
+          value: value,
+          groupValue: group,
+          onChanged: (v) => onChanged(v!),
+        ),
+      ],
+    ),
+  );
 }
