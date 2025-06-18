@@ -8,4 +8,6 @@ class AppColors {
   static const onPrimary = Colors.white;
 
   static const onSurface = Color(0xFF1D1B20);
+
+  static const background = Color(0xFFF9FFFF);
 }

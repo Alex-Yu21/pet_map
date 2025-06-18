@@ -88,8 +88,15 @@ class PetMapApp extends StatelessWidget {
         navigationBarTheme: NavigationBarThemeData(
           backgroundColor: AppColors.onPrimary,
           indicatorColor: AppColors.secondary,
-          labelTextStyle: WidgetStateProperty.all(
-            TextStyle(fontSize: 12.h, fontWeight: FontWeight.w600),
+          labelTextStyle: WidgetStateProperty.resolveWith(
+            (states) => TextStyle(
+              fontSize: 12.h,
+              fontWeight: FontWeight.w600,
+              color:
+                  states.contains(WidgetState.selected)
+                      ? AppColors.primary
+                      : AppColors.secondary,
+            ),
           ),
           iconTheme: WidgetStateProperty.resolveWith(
             (states) => IconThemeData(
