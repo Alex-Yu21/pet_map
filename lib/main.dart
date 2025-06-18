@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_map/presentation/resources/app_colors.dart';
+import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/root_view.dart';
 
 void main() {
@@ -42,6 +43,7 @@ class PetMapApp extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             foregroundColor: AppColors.onPrimary,
+            textStyle: TextStyle(fontSize: FontSizes.description),
             shape: const StadiumBorder(),
             padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
             elevation: 0,
@@ -49,13 +51,17 @@ class PetMapApp extends StatelessWidget {
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
+            textStyle: TextStyle(fontSize: FontSizes.description),
             foregroundColor: AppColors.primary,
             side: const BorderSide(color: AppColors.primary, width: 1.4),
             shape: const StadiumBorder(),
           ),
         ),
         textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(foregroundColor: AppColors.primary),
+          style: TextButton.styleFrom(
+            textStyle: TextStyle(fontSize: FontSizes.description),
+            foregroundColor: AppColors.primary,
+          ),
         ),
 
         inputDecorationTheme: InputDecorationTheme(
@@ -81,7 +87,7 @@ class PetMapApp extends StatelessWidget {
 
         navigationBarTheme: NavigationBarThemeData(
           backgroundColor: AppColors.onPrimary,
-          indicatorColor: AppColors.primary,
+          indicatorColor: AppColors.secondary,
           labelTextStyle: WidgetStateProperty.all(
             TextStyle(fontSize: 12.h, fontWeight: FontWeight.w600),
           ),

@@ -64,6 +64,21 @@ class _MapViewState extends ConsumerState<MapView>
           bottom: Paddings.xl,
           child: LocationButton(ref: ref, repo: repo),
         ),
+        Positioned(
+          bottom: Paddings.s,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                // TODO: открыть добавление клиники
+              },
+              style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
+              icon: const Icon(Icons.add, color: Colors.white),
+              label: Text('добавить клинику'),
+            ),
+          ),
+        ),
       ],
     );
   }
