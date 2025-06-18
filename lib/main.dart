@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pet_map/presentation/resources/app_colors.dart';
 import 'package:pet_map/presentation/views/root_view.dart';
 
 void main() {
@@ -22,9 +23,79 @@ class PetMapApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: Brightness.light,
+      primary: AppColors.primary,
+      onPrimary: AppColors.onPrimary,
+      secondary: AppColors.secondary,
+      onSurface: AppColors.onSurface,
+    );
+
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: RootView(),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: colorScheme,
+
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: AppColors.onPrimary,
+            shape: const StadiumBorder(),
+            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 14.h),
+            elevation: 0,
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: AppColors.primary,
+            side: const BorderSide(color: AppColors.primary, width: 1.4),
+            shape: const StadiumBorder(),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(foregroundColor: AppColors.primary),
+        ),
+
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 14.w,
+            vertical: 12.h,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: AppColors.secondary),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: AppColors.secondary),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: AppColors.primary, width: 1.6),
+          ),
+        ),
+
+        navigationBarTheme: NavigationBarThemeData(
+          backgroundColor: AppColors.onPrimary,
+          indicatorColor: AppColors.primary,
+          labelTextStyle: WidgetStateProperty.all(
+            TextStyle(fontSize: 12.h, fontWeight: FontWeight.w600),
+          ),
+          iconTheme: WidgetStateProperty.resolveWith(
+            (states) => IconThemeData(
+              color:
+                  states.contains(WidgetState.selected)
+                      ? AppColors.primary
+                      : AppColors.secondary,
+            ),
+          ),
+        ),
+      ),
+      home: const RootView(),
     );
   }
 }
