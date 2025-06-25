@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pet_map/domain/entities/pet.dart';
 import 'package:pet_map/presentation/providers/pets_ui_providers.dart';
 import 'package:pet_map/presentation/resources/app_colors.dart';
@@ -18,9 +21,11 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
   final _breedCtrl = TextEditingController();
+  final _picker = ImagePicker();
 
   DateTime? _birthDate;
   bool? _sterilized;
+  String? _photoPath;
 
   @override
   void initState() {
@@ -31,6 +36,7 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
       _breedCtrl.text = p.breed ?? '';
       _birthDate = p.birthDate;
       _sterilized = p.isSterilized;
+      _photoPath = p.photoPath;
     }
   }
 
@@ -52,6 +58,14 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
     if (picked != null) setState(() => _birthDate = picked);
   }
 
+  Future<void> _pickPhoto() async {
+    final XFile? picked = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+    );
+    if (picked != null) setState(() => _photoPath = picked.path);
+  }
+
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -60,7 +74,7 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
       name: _nameCtrl.text.trim(),
       breed: _breedCtrl.text.trim().isEmpty ? null : _breedCtrl.text.trim(),
       birthDate: _birthDate,
-      photoPath: null, // TODO: добавить фото
+      photoPath: _photoPath,
       isSterilized: _sterilized!,
     );
 
@@ -81,11 +95,7 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
           child: ListView(
             padding: EdgeInsets.all(16.w),
             children: [
-              _PhotoBlock(
-                onPick: () {
-                  /* TODO: фото */
-                },
-              ),
+              _PhotoBlock(path: _photoPath, onPick: _pickPhoto),
               SizedBox(height: 24.h),
               Label('кличка'),
               TextFormField(
@@ -166,11 +176,17 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
 }
 
 class _PhotoBlock extends StatelessWidget {
-  const _PhotoBlock({required this.onPick});
+  const _PhotoBlock({required this.path, required this.onPick});
+  final String? path;
   final VoidCallback onPick;
 
   @override
   Widget build(BuildContext context) {
+    final image =
+        path == null
+            ? const AssetImage('assets/images/no_image.png') as ImageProvider
+            : FileImage(File(path!));
+
     return Stack(
       children: [
         Container(
@@ -178,24 +194,22 @@ class _PhotoBlock extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: AppColors.secondary,
-            image: const DecorationImage(
-              fit: BoxFit.cover,
-              image: AssetImage('assets/images/no_image.png'),
-            ),
+            image: DecorationImage(fit: BoxFit.cover, image: image),
           ),
         ),
         Positioned(
           right: 8,
           bottom: 8,
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(20),
-              onTap: onPick,
-              child: const Padding(
-                padding: EdgeInsets.all(4),
-                child: Icon(Icons.edit, color: Colors.white, size: 20),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(24),
+            onTap: onPick,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: const BoxDecoration(
+                color: Colors.black45,
+                shape: BoxShape.circle,
               ),
+              child: const Icon(Icons.edit, color: Colors.white, size: 18),
             ),
           ),
         ),
