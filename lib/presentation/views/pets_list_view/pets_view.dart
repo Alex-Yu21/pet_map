@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_map/presentation/providers/pets_ui_providers.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
-import 'package:pet_map/presentation/views/pets_view/widgets/add_button.dart';
-import 'package:pet_map/presentation/views/pets_view/widgets/pet_card.dart';
+import 'package:pet_map/presentation/views/pets_list_view/widgets/add_button.dart';
+import 'package:pet_map/presentation/views/pets_list_view/widgets/pet_card.dart';
 
 class PetsView extends ConsumerWidget {
   const PetsView({super.key});

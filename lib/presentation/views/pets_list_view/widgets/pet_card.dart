@@ -7,6 +7,8 @@ import 'package:pet_map/presentation/providers/pets_ui_providers.dart';
 import 'package:pet_map/presentation/resources/app_colors.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/add_pet_view/add_pet_view.dart';
+import 'package:pet_map/presentation/views/pet_view/pet_view.dart';
+import 'package:pet_map/presentation/views/widgets/menu_button.dart';
 
 class PetCard extends ConsumerWidget {
   const PetCard({super.key, required this.pet});
@@ -18,52 +20,12 @@ class PetCard extends ConsumerWidget {
 
     void openDetails() => Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => AddPetView(initialPet: pet)),
+      MaterialPageRoute(builder: (_) => PetView(pet: pet)),
     );
 
-    void openMenu() => showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder:
-          (ctx) => Padding(
-            padding: EdgeInsets.only(
-              left: Paddings.l,
-              right: Paddings.l,
-              top: Paddings.l,
-              bottom: MediaQuery.of(ctx).padding.bottom + Paddings.l,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                    splashRadius: 20,
-                    icon: Icon(Icons.close, color: AppColors.primary),
-                    onPressed: () => Navigator.pop(ctx),
-                  ),
-                ),
-                ListTile(
-                  title: const Text('Редактировать'),
-                  onTap: () {
-                    Navigator.pop(ctx);
-                    openDetails();
-                  },
-                ),
-                ListTile(
-                  title: const Text('Удалить'),
-                  onTap: () {
-                    Navigator.pop(ctx);
-                    delete();
-                  },
-                ),
-              ],
-            ),
-          ),
+    void openEdit() => Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => AddPetView(initialPet: pet)),
     );
 
     Widget petImage() {
@@ -87,18 +49,14 @@ class PetCard extends ConsumerWidget {
           children: [
             Align(
               alignment: Alignment.topRight,
-              child: IconButton(
-                splashRadius: 20,
-                icon: Icon(Icons.more_horiz, color: AppColors.secondary),
-                onPressed: openMenu,
-              ),
+              child: MenuButton(pet: pet, onEdit: openEdit, onDelete: delete),
             ),
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: AspectRatio(aspectRatio: 5 / 3, child: petImage()),
             ),
             SizedBox(height: Paddings.m),
-            Text(pet.name, style: Theme.of(context).textTheme.titleMedium),
+            Text(pet.name),
             SizedBox(height: Paddings.m),
             Align(
               alignment: Alignment.centerRight,

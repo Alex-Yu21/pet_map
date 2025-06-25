@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_map/domain/entities/pet.dart';
 import 'package:pet_map/presentation/providers/pets_ui_providers.dart';
 import 'package:pet_map/presentation/resources/app_colors.dart';
+import 'package:pet_map/presentation/views/widgets/label.dart';
 
 class AddPetView extends ConsumerStatefulWidget {
   final Pet? initialPet;
@@ -86,7 +87,7 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
                 },
               ),
               SizedBox(height: 24.h),
-              _Label('кличка'),
+              Label('кличка'),
               TextFormField(
                 controller: _nameCtrl,
                 maxLines: null,
@@ -95,7 +96,7 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
                         v == null || v.trim().isEmpty ? 'Введите кличку' : null,
               ),
               SizedBox(height: 16.h),
-              _Label('дата  рождения'),
+              Label('дата  рождения'),
               TextFormField(
                 readOnly: true,
                 controller: TextEditingController(
@@ -110,10 +111,10 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
                 ),
               ),
               SizedBox(height: 16.h),
-              _Label('порода'),
+              Label('порода'),
               TextFormField(controller: _breedCtrl),
               SizedBox(height: 24.h),
-              _Label('стерилизован'),
+              Label('стерилизован'),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -162,17 +163,6 @@ class _AddPetViewState extends ConsumerState<AddPetView> {
 
   String _fmt(DateTime d) =>
       '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.${d.year}';
-}
-
-class _Label extends StatelessWidget {
-  final String text;
-  const _Label(this.text);
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 4),
-    child: Text(text, style: TextStyle(fontSize: 16.sp)),
-  );
 }
 
 class _PhotoBlock extends StatelessWidget {
