@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pet_map/data/datasources/local_clinic_ds.dart';
+import 'package:pet_map/di/app_providers.dart';
 import 'package:pet_map/presentation/resources/app_colors.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/root_view.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final clinicDS = LocalClinicDS();
+  await clinicDS.init();
   runApp(
     ProviderScope(
+      overrides: [localClinicDSProvider.overrideWithValue(clinicDS)],
       child: ScreenUtilInit(
         designSize: const Size(375, 812),
         minTextAdapt: true,
