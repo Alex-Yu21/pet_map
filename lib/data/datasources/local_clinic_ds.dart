@@ -10,6 +10,8 @@ class LocalClinicDS {
   static const _customKey = 'custom_clinics';
   late final SharedPreferences _prefs;
 
+  bool get isInitialized => _prefs != null;
+
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
   }
@@ -39,6 +41,8 @@ class LocalClinicDS {
             phone: e['phone'],
             visible: e['visible'],
             isCustom: true,
+            specializations:
+                (e['specs'] as List?)?.cast<String>() ?? const <String>[],
           ),
         )
         .toList();
@@ -59,6 +63,7 @@ class LocalClinicDS {
                 'address': v.address,
                 'phone': v.phone,
                 'visible': v.visible,
+                'specs': v.specializations, // <-- save
               },
             )
             .toList(),

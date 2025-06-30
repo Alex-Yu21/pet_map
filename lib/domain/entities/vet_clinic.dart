@@ -8,6 +8,7 @@ class VetClinic {
   final String? phone;
   final bool visible;
   final bool isCustom;
+  final List<String> specializations;
 
   const VetClinic({
     required this.id,
@@ -17,6 +18,7 @@ class VetClinic {
     this.phone,
     this.visible = true,
     this.isCustom = false,
+    this.specializations = const <String>[],
   });
 
   VetClinic copyWith({bool? visible}) => VetClinic(
@@ -27,5 +29,6 @@ class VetClinic {
     phone: phone,
     visible: visible ?? this.visible,
     isCustom: isCustom,
+    specializations: specializations,
   );
 }
