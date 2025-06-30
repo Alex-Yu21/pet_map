@@ -5,6 +5,7 @@ import 'package:pet_map/di/app_providers.dart';
 import 'package:pet_map/presentation/providers/map_position_providers.dart';
 import 'package:pet_map/presentation/providers/map_ui_providers.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
+import 'package:pet_map/presentation/views/add_clinic_view/add_clinic_view.dart';
 import 'package:pet_map/presentation/views/map_view/widgets/location_button.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
@@ -71,7 +72,9 @@ class _MapViewState extends ConsumerState<MapView>
           child: Center(
             child: ElevatedButton.icon(
               onPressed: () {
-                // TODO: открыть добавление клиники
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const AddClinicView()),
+                );
               },
               style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
               icon: const Icon(Icons.add, color: Colors.white),
