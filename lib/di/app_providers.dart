@@ -1,6 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_map/data/datasources/local_clinic_ds.dart';
+import 'package:pet_map/data/repositories/clinics_repository_impl.dart';
+import 'package:pet_map/domain/repositories/clinics_repository.dart';
 import 'package:pet_map/domain/repositories/map_repository.dart';
 import 'package:pet_map/domain/repositories/pet_repository.dart';
+import 'package:pet_map/domain/usecases/clinics/add_clinic.dart';
 import 'package:pet_map/domain/usecases/location/get_current_position.dart';
 import 'package:pet_map/domain/usecases/location/stream_position.dart';
 import 'package:pet_map/domain/usecases/pet/add_pet.dart';
@@ -43,4 +47,14 @@ final getCurrentPosUCProvider = Provider(
 );
 final streamPosUCProvider = Provider(
   (_) => StreamPosition(LocationService.stream),
+);
+
+final localClinicDSProvider = Provider<LocalClinicDS>(
+  (_) => throw UnimplementedError('Override in main.dart'),
+);
+final clinicsRepositoryProvider = Provider<ClinicsRepository>(
+  (ref) => ClinicsRepositoryImpl(ref.read(localClinicDSProvider)),
+);
+final addClinicUCProvider = Provider<AddClinic>(
+  (ref) => AddClinic(ref.read(clinicsRepositoryProvider)),
 );
