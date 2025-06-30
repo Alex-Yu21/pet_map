@@ -10,8 +10,7 @@ class LocalClinicDS {
   static const _customKey = 'custom_clinics';
   late final SharedPreferences _prefs;
 
-  bool get isInitialized => _prefs != null;
-
+  // ignore: unnecessary_null_comparison
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
   }
