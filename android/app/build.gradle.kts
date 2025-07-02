@@ -6,10 +6,10 @@ plugins {
 }
 
 android {
-    namespace = "com.app.mapkit.pet_map"  
+    namespace = "com.app.mapkit.pet_map"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -20,10 +20,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.app.mapkit.pet_map"  
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        applicationId = "com.app.mapkit.pet_map"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -33,7 +30,6 @@ android {
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -44,5 +40,5 @@ flutter {
 }
 
 dependencies {
-    implementation("com.yandex.android:maps.mobile:4.2.2-full")
+    
 }
