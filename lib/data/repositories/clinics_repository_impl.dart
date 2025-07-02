@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pet_map/domain/repositories/clinics_repository.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 import '../../domain/entities/vet_clinic.dart';
 import '../datasources/local_clinic_ds.dart';
@@ -19,7 +19,7 @@ class ClinicsRepositoryImpl implements ClinicsRepository {
 
   @override
   Future<List<VetClinic>> getNearby(
-    Point center, {
+    LatLng center, {
     double radiusMeters = 5_000,
   }) async {
     final all = _local.customClinics();

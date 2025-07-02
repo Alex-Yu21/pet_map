@@ -1,8 +1,8 @@
-import 'package:yandex_mapkit/yandex_mapkit.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 abstract class MapRepository {
   Future<void> moveCamera(
-    YandexMapController controller,
+    GoogleMapController controller,
     CameraPosition position,
   );
 }
