@@ -1,9 +1,9 @@
-import 'package:yandex_mapkit/yandex_mapkit.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class VetClinic {
   final String id;
   final String name;
-  final Point point;
+  final LatLng point;
   final String? address;
   final String? phone;
   final bool visible;
