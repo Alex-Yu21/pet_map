@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 import '../../domain/entities/vet_clinic.dart';
 
@@ -10,7 +10,6 @@ class LocalClinicDS {
   static const _customKey = 'custom_clinics';
   late final SharedPreferences _prefs;
 
-  // ignore: unnecessary_null_comparison
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
   }
@@ -35,7 +34,7 @@ class LocalClinicDS {
           (e) => VetClinic(
             id: e['id'],
             name: e['name'],
-            point: Point(latitude: e['lat'], longitude: e['lon']),
+            point: LatLng(e['lat'], e['lon']),
             address: e['address'],
             phone: e['phone'],
             visible: e['visible'],
@@ -62,7 +61,7 @@ class LocalClinicDS {
                 'address': v.address,
                 'phone': v.phone,
                 'visible': v.visible,
-                'specs': v.specializations, // <-- save
+                'specs': v.specializations,
               },
             )
             .toList(),
