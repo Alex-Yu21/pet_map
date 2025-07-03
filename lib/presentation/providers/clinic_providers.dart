@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../data/datasources/local_clinic_ds.dart';
 import '../../data/repositories/clinics_repository_impl.dart';
@@ -22,7 +22,7 @@ final clinicsStreamProvider = StreamProvider<List<VetClinic>>(
 );
 
 final nearbyClinicsProvider = FutureProvider.autoDispose
-    .family<List<VetClinic>, Point>((ref, point) {
+    .family<List<VetClinic>, LatLng>((ref, point) {
       final uc = GetNearbyClinics(ref.read(_repoProvider));
       return uc(point);
     });
