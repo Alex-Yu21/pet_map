@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pet_map/data/datasources/local_clinic_ds.dart';
 import 'package:pet_map/data/repositories/clinics_repository_impl.dart';
 import 'package:pet_map/domain/entities/vet_clinic.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +16,7 @@ void main() {
     final clinic = VetClinic(
       id: '1',
       name: 'Test Vet',
-      point: const Point(latitude: 59.9343, longitude: 30.3351),
+      point: const LatLng(59.9343, 30.3351),
     );
     await local.addCustom(clinic);
 
@@ -24,10 +24,7 @@ void main() {
 
     final firstEmission = repo.watchClinics().first;
 
-    await repo.getNearby(
-      const Point(latitude: 59.9, longitude: 30.3),
-      radiusMeters: 5000,
-    );
+    await repo.getNearby(const LatLng(59.9, 30.3), radiusMeters: 5000);
 
     final clinics = await firstEmission;
     expect(clinics.length, 1);
