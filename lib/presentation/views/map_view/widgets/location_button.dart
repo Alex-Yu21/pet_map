@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pet_map/domain/repositories/map_repository.dart';
 import 'package:pet_map/presentation/providers/map_position_providers.dart';
 import 'package:pet_map/presentation/providers/map_ui_providers.dart';
 import 'package:pet_map/presentation/resources/app_colors.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class LocationButton extends StatelessWidget {
   const LocationButton({super.key, required this.ref, required this.repo});
@@ -40,7 +40,7 @@ class LocationButton extends StatelessWidget {
             await repo.moveCamera(
               ctrl,
               CameraPosition(
-                target: Point(latitude: pos.latitude, longitude: pos.longitude),
+                target: LatLng(pos.latitude, pos.longitude),
                 zoom: 15,
               ),
             );

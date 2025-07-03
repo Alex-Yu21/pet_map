@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pet_map/di/app_providers.dart';
 import 'package:pet_map/domain/entities/vet_clinic.dart';
 import 'package:pet_map/presentation/resources/app_colors.dart';
 import 'package:pet_map/presentation/views/widgets/label.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class AddClinicView extends ConsumerStatefulWidget {
   final VoidCallback? onSuccess;
@@ -52,9 +52,9 @@ class _AddClinicViewState extends ConsumerState<AddClinicView> {
     final clinic = VetClinic(
       id: DateTime.now().microsecondsSinceEpoch.toString(),
       name: _nameCtrl.text.trim(),
-      point: Point(
-        latitude: rnd.nextDouble(), // TODO: заменить выбором на карте?
-        longitude: rnd.nextDouble(),
+      point: LatLng(
+        rnd.nextDouble(), // TODO: заменить выбором на карте?
+        rnd.nextDouble(),
       ),
       address: _addrCtrl.text.trim(),
       phone: _phoneCtrl.text.trim().isEmpty ? null : _phoneCtrl.text.trim(),
@@ -133,7 +133,6 @@ class _AddClinicViewState extends ConsumerState<AddClinicView> {
                 ),
               ),
             ),
-
             Padding(
               padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
               child: Row(
