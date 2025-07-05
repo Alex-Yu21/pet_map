@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pet_map/data/datasources/pet_local_datasource.dart';
+import 'package:pet_map/data/datasources/pet_local_ds.dart';
 import 'package:pet_map/data/repositories/pet_repository_impl.dart';
 import 'package:pet_map/domain/entities/pet.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';

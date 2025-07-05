@@ -1,4 +1,4 @@
-import 'package:pet_map/data/datasources/pet_local_datasource.dart';
+import 'package:pet_map/data/datasources/pet_local_ds.dart';
 import 'package:pet_map/domain/entities/pet.dart';
 import 'package:pet_map/domain/repositories/pet_repository.dart';
 
