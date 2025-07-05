@@ -18,17 +18,18 @@ class VetClinic {
     this.phone,
     this.visible = true,
     this.isCustom = false,
-    this.specializations = const <String>[],
+    this.specializations = const ['кошки/собаки'],
   });
 
-  VetClinic copyWith({bool? visible}) => VetClinic(
-    id: id,
-    name: name,
-    point: point,
-    address: address,
-    phone: phone,
-    visible: visible ?? this.visible,
-    isCustom: isCustom,
-    specializations: specializations,
-  );
+  VetClinic copyWith({bool? visible, List<String>? specializations}) =>
+      VetClinic(
+        id: id,
+        name: name,
+        point: point,
+        address: address,
+        phone: phone,
+        visible: visible ?? this.visible,
+        isCustom: isCustom,
+        specializations: specializations ?? this.specializations,
+      );
 }

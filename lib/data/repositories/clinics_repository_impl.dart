@@ -1,18 +1,26 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:pet_map/domain/repositories/clinics_repository.dart';
 
 import '../../domain/entities/vet_clinic.dart';
+import '../../domain/repositories/clinics_repository.dart';
 import '../datasources/local_clinic_ds.dart';
 
 class ClinicsRepositoryImpl implements ClinicsRepository {
-  ClinicsRepositoryImpl(this._local);
+  ClinicsRepositoryImpl(this._local) {
+    _cache = _local.customClinics();
+    _stream = StreamController<List<VetClinic>>.broadcast();
+    Future.microtask(() {
+      _stream.add(_cache);
+      debugPrint('initial emit → ${_cache.length} clinics');
+    });
+  }
 
   final LocalClinicDS _local;
 
-  final _stream = StreamController<List<VetClinic>>.broadcast();
-  List<VetClinic> _cache = const [];
+  late final StreamController<List<VetClinic>> _stream;
+  late List<VetClinic> _cache;
 
   @override
   Stream<List<VetClinic>> watchClinics() => _stream.stream;
@@ -20,14 +28,14 @@ class ClinicsRepositoryImpl implements ClinicsRepository {
   @override
   Future<List<VetClinic>> getNearby(
     LatLng center, {
-    double radiusMeters = 5_000,
+    double radiusMeters = 5000,
   }) async {
     final all = _local.customClinics();
     final hidden = _local.hiddenIds();
-
     _cache =
         all.map((c) => c.copyWith(visible: !hidden.contains(c.id))).toList();
     _stream.add(_cache);
+    debugPrint('getNearby emit → ${_cache.length} clinics');
     return _cache;
   }
 

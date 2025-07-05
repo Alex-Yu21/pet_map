@@ -12,7 +12,7 @@ import 'package:pet_map/domain/usecases/pet/delete_pet.dart';
 import 'package:pet_map/domain/usecases/pet/get_pets.dart';
 import 'package:pet_map/domain/usecases/pet/update_pet.dart';
 
-import '../data/datasources/pet_local_datasource.dart';
+import '../data/datasources/pet_local_ds.dart';
 import '../data/repositories/map_repository_impl.dart';
 import '../data/repositories/pet_repository_impl.dart';
 import '../data/services/location_service.dart';
