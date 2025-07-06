@@ -6,13 +6,11 @@ import 'package:pet_map/di/app_providers.dart';
 import 'package:pet_map/presentation/providers/clinic_providers.dart';
 import 'package:pet_map/presentation/providers/map_position_providers.dart';
 import 'package:pet_map/presentation/providers/map_ui_providers.dart';
-import 'package:pet_map/presentation/providers/search_provider.dart';
-import 'package:pet_map/presentation/providers/suggestions_provider.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/add_clinic_view/add_clinic_view.dart';
 import 'package:pet_map/presentation/views/map_view/widgets/filter_panel.dart';
 import 'package:pet_map/presentation/views/map_view/widgets/search_line.dart';
-import 'package:pet_map/presentation/views/widgets/label.dart';
+import 'package:pet_map/presentation/views/map_view/widgets/search_overlay.dart';
 
 import 'widgets/location_button.dart';
 
@@ -56,8 +54,8 @@ class _MapViewState extends ConsumerState<MapView>
 
     final markersAsync = ref.watch(filteredClinicsProvider);
     final iconAsync = ref.watch(customClinicMarkerProvider);
-    final suggestions = ref.watch(suggestionsProvider);
     final repo = ref.read(mapRepositoryProvider);
+    final topOffset = MediaQuery.of(context).padding.top + 72;
 
     return Scaffold(
       body: Stack(
@@ -102,42 +100,12 @@ class _MapViewState extends ConsumerState<MapView>
           ),
           if (_showFilter)
             Positioned(
-              top: MediaQuery.of(context).padding.top + 72,
+              top: topOffset,
               left: 0,
               right: 0,
               child: const FilterPanel(),
             ),
-          if (suggestions.isNotEmpty)
-            Positioned(
-              top: MediaQuery.of(context).padding.top + 72,
-              left: 0,
-              right: 0,
-              child: Material(
-                elevation: 8,
-                child: ListView.separated(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  itemCount: suggestions.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
-                  itemBuilder: (_, i) {
-                    final c = suggestions[i];
-                    return ListTile(
-                      title: Label(c.name),
-                      subtitle: c.address != null ? Label(c.address!) : null,
-                      onTap: () {
-                        ref.read(searchQueryProvider.notifier).state = '';
-                        ref
-                            .read(lastCameraPositionProvider.notifier)
-                            .state = CameraPosition(target: c.point, zoom: 16);
-                        ref
-                            .read(mapCtrlProvider)
-                            ?.animateCamera(CameraUpdate.newLatLng(c.point));
-                      },
-                    );
-                  },
-                ),
-              ),
-            ),
+          SearchOverlay(topOffset: topOffset),
           Positioned(
             right: Paddings.l,
             bottom: Paddings.xl,
