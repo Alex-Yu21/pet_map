@@ -1,17 +1,18 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pet_map/di/app_providers.dart';
 import 'package:pet_map/domain/entities/vet_clinic.dart';
+import 'package:pet_map/presentation/providers/map_position_providers.dart';
 import 'package:pet_map/presentation/resources/app_colors.dart';
+import 'package:pet_map/presentation/views/confirm_location_view/confirm_location_view.dart';
 import 'package:pet_map/presentation/views/widgets/label.dart';
 
 class AddClinicView extends ConsumerStatefulWidget {
-  final VoidCallback? onSuccess;
-  const AddClinicView({super.key, this.onSuccess});
+  const AddClinicView({super.key});
 
   @override
   ConsumerState<AddClinicView> createState() => _AddClinicViewState();
@@ -19,55 +20,88 @@ class AddClinicView extends ConsumerStatefulWidget {
 
 class _AddClinicViewState extends ConsumerState<AddClinicView> {
   final _formKey = GlobalKey<FormState>();
-  final _nameCtrl = TextEditingController();
-  final _addrCtrl = TextEditingController();
-  final _phoneCtrl = TextEditingController();
+  final _name = TextEditingController();
+  final _addr = TextEditingController();
+  final _phone = TextEditingController();
+  late final Map<String, bool> _specs;
+  LatLng? _point;
 
-  final Map<String, bool> _specs = {
-    'кошки/собаки': true,
-    'грызуны': false,
-    'рептилии': false,
-    'птицы': false,
-  };
+  @override
+  void initState() {
+    super.initState();
+    _specs = {
+      for (final s in VetClinic.allSpecializations)
+        s: s == VetClinic.allSpecializations.first,
+    };
+  }
 
   @override
   void dispose() {
-    _nameCtrl.dispose();
-    _addrCtrl.dispose();
-    _phoneCtrl.dispose();
+    _name.dispose();
+    _addr.dispose();
+    _phone.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickLocation() async {
+    final cam = ref.read(lastCameraPositionProvider);
+    LatLng init;
+    if (cam != null) {
+      init = cam.target;
+    } else {
+      final pos = await Geolocator.getCurrentPosition();
+      init = LatLng(pos.latitude, pos.longitude);
+    }
+    final res = await Navigator.push<LatLng>(
+      context,
+      MaterialPageRoute(builder: (_) => ConfirmLocationView(initial: init)),
+    );
+    if (res != null) {
+      setState(() => _point = res);
+      try {
+        final placemarks = await placemarkFromCoordinates(
+          res.latitude,
+          res.longitude,
+        );
+        if (placemarks.isNotEmpty) {
+          final p = placemarks.first;
+          final formatted = [
+            p.street,
+            p.subLocality,
+            p.locality,
+          ].where((e) => e != null && e.isNotEmpty).join(', ');
+          setState(() => _addr.text = formatted);
+        }
+      } catch (_) {}
+    }
   }
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
-
-    if (!_specs.values.any((v) => v)) {
+    if (!_specs.values.contains(true)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Выберите специализацию')));
+      return;
+    }
+    if (_point == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Выберите хотя бы одну специализацию')),
+        const SnackBar(content: Text('Выберите местоположение на карте')),
       );
       return;
     }
-
-    final rnd = Random();
     final clinic = VetClinic(
       id: DateTime.now().microsecondsSinceEpoch.toString(),
-      name: _nameCtrl.text.trim(),
-      point: LatLng(
-        rnd.nextDouble(), // TODO: заменить выбором на карте?
-        rnd.nextDouble(),
-      ),
-      address: _addrCtrl.text.trim(),
-      phone: _phoneCtrl.text.trim().isEmpty ? null : _phoneCtrl.text.trim(),
+      name: _name.text.trim(),
+      point: _point!,
+      address: _addr.text.trim(),
+      phone: _phone.text.trim().isEmpty ? null : _phone.text.trim(),
       isCustom: true,
       specializations:
           _specs.entries.where((e) => e.value).map((e) => e.key).toList(),
     );
-
     await ref.read(addClinicUCProvider).call(clinic);
-    if (mounted) {
-      widget.onSuccess?.call();
-      Navigator.pop(context);
-    }
+    if (mounted) Navigator.pop(context);
   }
 
   @override
@@ -85,8 +119,7 @@ class _AddClinicViewState extends ConsumerState<AddClinicView> {
                   children: [
                     Label('название'),
                     TextFormField(
-                      controller: _nameCtrl,
-                      maxLines: null,
+                      controller: _name,
                       validator:
                           (v) =>
                               v == null || v.trim().isEmpty
@@ -96,17 +129,23 @@ class _AddClinicViewState extends ConsumerState<AddClinicView> {
                     SizedBox(height: 16.h),
                     Label('адрес'),
                     TextFormField(
-                      controller: _addrCtrl,
+                      controller: _addr,
                       validator:
                           (v) =>
                               v == null || v.trim().isEmpty
                                   ? 'Введите адрес'
                                   : null,
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.location_on_outlined),
+                          onPressed: _pickLocation,
+                        ),
+                      ),
                     ),
                     SizedBox(height: 16.h),
                     Label('телефон'),
                     TextFormField(
-                      controller: _phoneCtrl,
+                      controller: _phone,
                       keyboardType: TextInputType.phone,
                     ),
                     SizedBox(height: 24.h),
@@ -169,7 +208,6 @@ class _CheckLine extends StatelessWidget {
     required this.value,
     required this.onChanged,
   });
-
   final String label;
   final bool value;
   final ValueChanged<bool> onChanged;
