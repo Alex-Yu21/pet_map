@@ -6,10 +6,10 @@ import 'package:pet_map/di/app_providers.dart';
 import 'package:pet_map/presentation/providers/clinic_providers.dart';
 import 'package:pet_map/presentation/providers/map_position_providers.dart';
 import 'package:pet_map/presentation/providers/map_ui_providers.dart';
-import 'package:pet_map/presentation/providers/search_provider.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/add_clinic_view/add_clinic_view.dart';
 import 'package:pet_map/presentation/views/map_view/widgets/filter_panel.dart';
+import 'package:pet_map/presentation/views/map_view/widgets/search_line.dart';
 
 import 'widgets/location_button.dart';
 
@@ -27,6 +27,12 @@ class _MapViewState extends ConsumerState<MapView>
     zoom: 12,
   );
   bool _showFilter = false;
+
+  void _toggleFilter() {
+    setState(() {
+      _showFilter = !_showFilter;
+    });
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -57,31 +63,6 @@ class _MapViewState extends ConsumerState<MapView>
     final repo = ref.read(mapRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Consumer(
-          builder: (_, ref, __) {
-            final query = ref.watch(searchQueryProvider);
-            return TextField(
-              controller: TextEditingController(text: query)
-                ..selection = TextSelection.fromPosition(
-                  TextPosition(offset: query.length),
-                ),
-              decoration: const InputDecoration(
-                hintText: 'поиск клиники',
-                border: InputBorder.none,
-              ),
-              onChanged:
-                  (v) => ref.read(searchQueryProvider.notifier).state = v,
-            );
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () => setState(() => _showFilter = !_showFilter),
-          ),
-        ],
-      ),
       body: Stack(
         children: [
           GoogleMap(
@@ -116,9 +97,15 @@ class _MapViewState extends ConsumerState<MapView>
               error: (_, __) => {},
             ),
           ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top,
+            left: 0,
+            right: 0,
+            child: SearchLine(onFilterTap: _toggleFilter),
+          ),
           if (_showFilter)
             Positioned(
-              top: MediaQuery.of(context).padding.top,
+              top: MediaQuery.of(context).padding.top + 56, // высота search bar
               left: 0,
               right: 0,
               child: const FilterPanel(),
