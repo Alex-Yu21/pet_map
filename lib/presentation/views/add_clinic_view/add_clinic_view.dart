@@ -12,7 +12,8 @@ import 'package:pet_map/presentation/views/confirm_location_view/confirm_locatio
 import 'package:pet_map/presentation/views/widgets/label.dart';
 
 class AddClinicView extends ConsumerStatefulWidget {
-  const AddClinicView({super.key});
+  final VetClinic? initial;
+  const AddClinicView({super.key, this.initial});
 
   @override
   ConsumerState<AddClinicView> createState() => _AddClinicViewState();
@@ -26,13 +27,24 @@ class _AddClinicViewState extends ConsumerState<AddClinicView> {
   late final Map<String, bool> _specs;
   LatLng? _point;
 
+  bool get _isEdit => widget.initial != null;
+
   @override
   void initState() {
     super.initState();
-    _specs = {
-      for (final s in VetClinic.allSpecializations)
-        s: s == VetClinic.allSpecializations.first,
-    };
+    _specs = {for (final s in VetClinic.allSpecializations) s: false};
+    if (_isEdit) {
+      final c = widget.initial!;
+      _name.text = c.name;
+      _addr.text = c.address ?? '';
+      _phone.text = c.phone ?? '';
+      _point = c.point;
+      for (final s in c.specializations) {
+        _specs[s] = true;
+      }
+    } else {
+      _specs[VetClinic.allSpecializations.first] = true;
+    }
   }
 
   @override
@@ -91,7 +103,10 @@ class _AddClinicViewState extends ConsumerState<AddClinicView> {
       return;
     }
     final clinic = VetClinic(
-      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      id:
+          _isEdit
+              ? widget.initial!.id
+              : DateTime.now().microsecondsSinceEpoch.toString(),
       name: _name.text.trim(),
       point: _point!,
       address: _addr.text.trim(),

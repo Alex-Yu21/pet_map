@@ -49,7 +49,11 @@ class PetCard extends ConsumerWidget {
           children: [
             Align(
               alignment: Alignment.topRight,
-              child: MenuButton(pet: pet, onEdit: openEdit, onDelete: delete),
+              child: MenuButton.pet(
+                pet: pet,
+                onEdit: openEdit,
+                onDelete: delete,
+              ),
             ),
             ClipRRect(
               borderRadius: BorderRadius.circular(8),

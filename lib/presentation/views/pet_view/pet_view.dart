@@ -83,7 +83,7 @@ class PetView extends ConsumerWidget {
                     children: [
                       Align(
                         alignment: Alignment.topRight,
-                        child: MenuButton(
+                        child: MenuButton.pet(
                           pet: pet,
                           onEdit: openEdit,
                           onDelete: delete,

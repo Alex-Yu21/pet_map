@@ -48,3 +48,5 @@ final addClinicProvider = Provider<AddClinic>(
 final toggleClinicProvider = Provider<ToggleVisibility>(
   (ref) => ToggleVisibility(ref.read(clinicsRepositoryProvider)),
 );
+
+final selectedClinicProvider = StateProvider<VetClinic?>((_) => null);

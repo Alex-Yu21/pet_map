@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pet_map/domain/entities/pet.dart';
+import 'package:pet_map/domain/entities/vet_clinic.dart';
 import 'package:pet_map/presentation/resources/app_colors.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/widgets/label.dart';
@@ -8,16 +9,24 @@ typedef OnEdit = void Function();
 typedef OnDelete = Future<void> Function();
 
 class MenuButton extends StatelessWidget {
-  final Pet pet;
+  final Pet? pet;
+  final VetClinic? clinic;
   final OnEdit onEdit;
   final OnDelete onDelete;
 
-  const MenuButton({
+  const MenuButton.pet({
     super.key,
     required this.pet,
     required this.onEdit,
     required this.onDelete,
-  });
+  }) : clinic = null;
+
+  const MenuButton.clinic({
+    super.key,
+    required this.clinic,
+    required this.onEdit,
+    required this.onDelete,
+  }) : pet = null;
 
   Future<void> _confirmDelete(BuildContext context) async {
     final bool? confirmed = await showModalBottomSheet<bool>(
@@ -35,7 +44,7 @@ class MenuButton extends StatelessWidget {
               children: [
                 Label('Удалить карточку?'),
                 Label('(данное действие нельзя будет отменить)'),
-                SizedBox(height: 24),
+                SizedBox(height: Paddings.l),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -60,10 +69,7 @@ class MenuButton extends StatelessWidget {
             ),
           ),
     );
-
-    if (confirmed == true) {
-      await onDelete();
-    }
+    if (confirmed == true) await onDelete();
   }
 
   void _openMenu(BuildContext context) {
@@ -72,12 +78,7 @@ class MenuButton extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder:
           (ctx) => Container(
-            padding: EdgeInsets.only(
-              left: Paddings.l,
-              right: Paddings.l,
-              top: Paddings.l,
-              bottom: Paddings.l,
-            ),
+            padding: EdgeInsets.all(Paddings.l),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
@@ -88,20 +89,20 @@ class MenuButton extends StatelessWidget {
                 Align(
                   alignment: Alignment.topRight,
                   child: IconButton(
-                    splashRadius: 20,
+                    splashRadius: IconSizes.m,
                     icon: Icon(Icons.close, color: AppColors.primary),
                     onPressed: () => Navigator.pop(ctx),
                   ),
                 ),
                 ListTile(
-                  title: Label('Редактировать'),
+                  title: const Label('Редактировать'),
                   onTap: () {
                     Navigator.pop(ctx);
                     onEdit();
                   },
                 ),
                 ListTile(
-                  title: Label('Удалить'),
+                  title: const Label('Удалить'),
                   onTap: () async {
                     Navigator.pop(ctx);
                     await _confirmDelete(context);
@@ -115,7 +116,7 @@ class MenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => IconButton(
-    splashRadius: 20,
+    splashRadius: IconSizes.m,
     icon: Icon(Icons.more_horiz, color: AppColors.secondary),
     onPressed: () => _openMenu(context),
   );

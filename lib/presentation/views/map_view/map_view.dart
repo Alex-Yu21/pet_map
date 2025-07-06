@@ -8,6 +8,7 @@ import 'package:pet_map/presentation/providers/map_position_providers.dart';
 import 'package:pet_map/presentation/providers/map_ui_providers.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/add_clinic_view/add_clinic_view.dart';
+import 'package:pet_map/presentation/views/map_view/widgets/clinic_card.dart';
 import 'package:pet_map/presentation/views/map_view/widgets/filter_panel.dart';
 import 'package:pet_map/presentation/views/map_view/widgets/search_line.dart';
 import 'package:pet_map/presentation/views/map_view/widgets/search_overlay.dart';
@@ -26,8 +27,14 @@ class _MapViewState extends ConsumerState<MapView>
     target: LatLng(59.9343, 30.3351),
     zoom: 12,
   );
+
   bool _showFilter = false;
   void _toggleFilter() => setState(() => _showFilter = !_showFilter);
+
+  Future<void> _loadNearby(LatLng center) async {
+    await ref.read(clinicsRepositoryProvider).getNearby(center);
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -39,21 +46,18 @@ class _MapViewState extends ConsumerState<MapView>
       next.whenData((pos) async {
         final ctrl = ref.read(mapCtrlProvider);
         if (ctrl != null) {
+          final target = LatLng(pos.latitude, pos.longitude);
           await ref
               .read(mapRepositoryProvider)
-              .moveCamera(
-                ctrl,
-                CameraPosition(
-                  target: LatLng(pos.latitude, pos.longitude),
-                  zoom: 15,
-                ),
-              );
+              .moveCamera(ctrl, CameraPosition(target: target, zoom: 15));
+          _loadNearby(target);
         }
       });
     });
 
     final markersAsync = ref.watch(filteredClinicsProvider);
     final iconAsync = ref.watch(customClinicMarkerProvider);
+    final selected = ref.watch(selectedClinicProvider);
     final repo = ref.read(mapRepositoryProvider);
     final topOffset = MediaQuery.of(context).padding.top + 72;
 
@@ -66,6 +70,11 @@ class _MapViewState extends ConsumerState<MapView>
               ref.read(mapCtrlProvider.notifier).state = c;
               await repo.moveCamera(c, _initial);
               ref.read(lastCameraPositionProvider.notifier).state = _initial;
+              _loadNearby(_initial.target);
+            },
+            onCameraIdle: () {
+              final pos = ref.read(lastCameraPositionProvider);
+              if (pos != null) _loadNearby(pos.target);
             },
             onCameraMove:
                 (pos) =>
@@ -82,8 +91,13 @@ class _MapViewState extends ConsumerState<MapView>
                       (c) => Marker(
                         markerId: MarkerId(c.id),
                         position: c.point,
-                        infoWindow: InfoWindow(title: c.name),
+                        infoWindow: const InfoWindow(),
                         icon: icon ?? BitmapDescriptor.defaultMarker,
+                        onTap:
+                            () =>
+                                ref
+                                    .read(selectedClinicProvider.notifier)
+                                    .state = c,
                       ),
                     )
                     .toSet();
@@ -106,27 +120,42 @@ class _MapViewState extends ConsumerState<MapView>
               child: const FilterPanel(),
             ),
           SearchOverlay(topOffset: topOffset),
+          if (selected != null)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: ClinicCard(
+                clinic: selected,
+                onClose:
+                    () =>
+                        ref.read(selectedClinicProvider.notifier).state = null,
+              ),
+            ),
           Positioned(
             right: Paddings.l,
             bottom: Paddings.xl,
             child: LocationButton(ref: ref, repo: repo),
           ),
-          Positioned(
-            bottom: Paddings.s,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: ElevatedButton.icon(
-                onPressed:
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const AddClinicView()),
-                    ),
-                style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
-                icon: const Icon(Icons.add, color: Colors.white),
-                label: const Text('добавить клинику'),
+          if (selected == null)
+            Positioned(
+              bottom: Paddings.s,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: ElevatedButton.icon(
+                  onPressed:
+                      () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const AddClinicView(),
+                        ),
+                      ),
+                  style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
+                  icon: const Icon(Icons.add, color: Colors.white),
+                  label: const Text('добавить клинику'),
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
