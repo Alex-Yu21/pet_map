@@ -7,7 +7,6 @@ import 'package:pet_map/presentation/resources/app_dimansions.dart';
 
 class SearchLine extends ConsumerWidget {
   final VoidCallback onFilterTap;
-
   const SearchLine({super.key, required this.onFilterTap});
 
   @override
