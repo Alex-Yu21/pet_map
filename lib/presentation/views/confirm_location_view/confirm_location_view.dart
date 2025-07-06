@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:pet_map/presentation/providers/map_ui_providers.dart';
 
-class ConfirmLocationView extends StatefulWidget {
+class ConfirmLocationView extends ConsumerStatefulWidget {
   final LatLng initial;
   const ConfirmLocationView({super.key, required this.initial});
 
   @override
-  State<ConfirmLocationView> createState() => _ConfirmLocationViewState();
+  ConsumerState<ConfirmLocationView> createState() =>
+      _ConfirmLocationViewState();
 }
 
-class _ConfirmLocationViewState extends State<ConfirmLocationView> {
+class _ConfirmLocationViewState extends ConsumerState<ConfirmLocationView> {
   late LatLng _point;
 
   @override
@@ -20,6 +23,8 @@ class _ConfirmLocationViewState extends State<ConfirmLocationView> {
 
   @override
   Widget build(BuildContext context) {
+    final iconAsync = ref.watch(customConfirmMarkerProvider);
+
     return Scaffold(
       body: Stack(
         children: [
@@ -32,8 +37,9 @@ class _ConfirmLocationViewState extends State<ConfirmLocationView> {
                 position: _point,
                 draggable: true,
                 onDragEnd: (p) => _point = p,
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueAzure,
+                icon: iconAsync.maybeWhen(
+                  data: (i) => i,
+                  orElse: () => BitmapDescriptor.defaultMarker,
                 ),
               ),
             },

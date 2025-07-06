@@ -10,3 +10,10 @@ final customClinicMarkerProvider = FutureProvider<BitmapDescriptor>((
   final bytes = await rootBundle.load('assets/images/clinic_pin.png');
   return BitmapDescriptor.bytes(bytes.buffer.asUint8List());
 });
+
+final customConfirmMarkerProvider = FutureProvider<BitmapDescriptor>((
+  ref,
+) async {
+  final bytes = await rootBundle.load('assets/images/marker.png');
+  return BitmapDescriptor.bytes(bytes.buffer.asUint8List());
+});
