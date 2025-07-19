@@ -8,6 +8,7 @@ import 'package:pet_map/di/app_providers.dart';
 import 'package:pet_map/domain/entities/vet_clinic.dart';
 import 'package:pet_map/presentation/providers/map_position_providers.dart';
 import 'package:pet_map/presentation/resources/app_colors.dart';
+import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/confirm_location_view/confirm_location_view.dart';
 import 'package:pet_map/presentation/views/widgets/label.dart';
 
@@ -194,17 +195,29 @@ class _AddClinicViewState extends ConsumerState<AddClinicView> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('отмена'),
-                  ),
-                  SizedBox(
-                    width: 160.w,
-                    child: ElevatedButton(
-                      onPressed: _save,
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(46),
-                        shape: const StadiumBorder(),
+                    child: Text(
+                      'отменить',
+                      style: TextStyle(
+                        fontSize: FontSizes.buttons,
+                        fontWeight: FontWeight.w500,
                       ),
-                      child: const Text('сохранить'),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _save,
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 10.h,
+                        horizontal: 16.w,
+                      ),
+                      shape: const StadiumBorder(),
+                    ),
+                    child: Text(
+                      'сохранить',
+                      style: TextStyle(
+                        fontSize: FontSizes.buttons,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ],
@@ -231,7 +244,7 @@ class _CheckLine extends StatelessWidget {
   Widget build(BuildContext context) => InkWell(
     onTap: () => onChanged(!value),
     child: Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: TextStyle(fontSize: 16.sp)),
         Checkbox(

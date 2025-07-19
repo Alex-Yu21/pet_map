@@ -19,6 +19,7 @@ class IconSizes {
 }
 
 class FontSizes {
+  static double get buttons => 14.sp;
   static double get description => 20.sp;
   static double get body => 24.sp;
 }
