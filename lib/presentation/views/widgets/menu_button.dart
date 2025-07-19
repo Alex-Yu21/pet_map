@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_map/domain/entities/pet.dart';
 import 'package:pet_map/domain/entities/vet_clinic.dart';
+import 'package:pet_map/presentation/providers/nav_ui_providers.dart';
 import 'package:pet_map/presentation/resources/app_colors.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/widgets/label.dart';
@@ -13,19 +15,22 @@ class MenuButton extends StatelessWidget {
   final VetClinic? clinic;
   final OnEdit onEdit;
   final OnDelete onDelete;
+  final WidgetRef? ref;
 
   const MenuButton.pet({
     super.key,
     required this.pet,
     required this.onEdit,
     required this.onDelete,
-  }) : clinic = null;
+  }) : clinic = null,
+       ref = null;
 
   const MenuButton.clinic({
     super.key,
     required this.clinic,
     required this.onEdit,
     required this.onDelete,
+    required this.ref,
   }) : pet = null;
 
   Future<void> _confirmDelete(BuildContext context) async {
@@ -72,8 +77,10 @@ class MenuButton extends StatelessWidget {
     if (confirmed == true) await onDelete();
   }
 
-  void _openMenu(BuildContext context) {
-    showModalBottomSheet(
+  Future<void> _openMenu(BuildContext context) async {
+    ref?.read(navBarShadowProvider.notifier).state = false;
+
+    await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder:
@@ -112,6 +119,8 @@ class MenuButton extends StatelessWidget {
             ),
           ),
     );
+
+    ref?.read(navBarShadowProvider.notifier).state = true;
   }
 
   @override

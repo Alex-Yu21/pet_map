@@ -5,3 +5,4 @@ final navIndexProvider = StateProvider<int>((_) => 0);
 final pageCtrlProvider = Provider<PageController>(
   (_) => PageController(initialPage: 0),
 );
+final navBarShadowProvider = StateProvider<bool>((_) => true);

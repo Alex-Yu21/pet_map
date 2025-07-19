@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pet_map/di/app_providers.dart';
 import 'package:pet_map/domain/entities/vet_clinic.dart';
 import 'package:pet_map/presentation/providers/map_position_providers.dart';
+import 'package:pet_map/presentation/providers/nav_ui_providers.dart';
 import 'package:pet_map/presentation/resources/app_colors.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/confirm_location_view/confirm_location_view.dart';
@@ -30,9 +31,13 @@ class _AddClinicViewState extends ConsumerState<AddClinicView> {
 
   bool get _isEdit => widget.initial != null;
 
+  void _showShadow() => ref.read(navBarShadowProvider.notifier).state = true;
+  void _hideShadow() => ref.read(navBarShadowProvider.notifier).state = false;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _hideShadow());
     _specs = {for (final s in VetClinic.allSpecializations) s: false};
     if (_isEdit) {
       final c = widget.initial!;
@@ -117,113 +122,125 @@ class _AddClinicViewState extends ConsumerState<AddClinicView> {
           _specs.entries.where((e) => e.value).map((e) => e.key).toList(),
     );
     await ref.read(addClinicUCProvider).call(clinic);
+    _showShadow();
     if (mounted) Navigator.pop(context);
+  }
+
+  Future<bool> _onWillPop() async {
+    _showShadow();
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Form(
-                key: _formKey,
-                child: ListView(
-                  padding: EdgeInsets.all(16.w),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: Form(
+                  key: _formKey,
+                  child: ListView(
+                    padding: EdgeInsets.all(16.w),
+                    children: [
+                      Label('название', fontSize: 12),
+                      TextFormField(
+                        controller: _name,
+                        validator:
+                            (v) =>
+                                v == null || v.trim().isEmpty
+                                    ? 'Введите название'
+                                    : null,
+                      ),
+                      SizedBox(height: 16.h),
+                      Label('адрес', fontSize: 12),
+                      TextFormField(
+                        controller: _addr,
+                        validator:
+                            (v) =>
+                                v == null || v.trim().isEmpty
+                                    ? 'Введите адрес'
+                                    : null,
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            icon: const Icon(Icons.location_on_outlined),
+                            onPressed: _pickLocation,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      Label('телефон', fontSize: 12),
+                      TextFormField(
+                        controller: _phone,
+                        keyboardType: TextInputType.phone,
+                      ),
+                      SizedBox(height: 24.h),
+                      Label('специализация', fontSize: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children:
+                            _specs.entries
+                                .map(
+                                  (e) => Padding(
+                                    padding: EdgeInsets.only(bottom: 8.h),
+                                    child: _CheckLine(
+                                      label: e.key,
+                                      value: e.value,
+                                      onChanged:
+                                          (v) =>
+                                              setState(() => _specs[e.key] = v),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Label('название', fontSize: 12),
-                    TextFormField(
-                      controller: _name,
-                      validator:
-                          (v) =>
-                              v == null || v.trim().isEmpty
-                                  ? 'Введите название'
-                                  : null,
-                    ),
-                    SizedBox(height: 16.h),
-                    Label('адрес', fontSize: 12),
-                    TextFormField(
-                      controller: _addr,
-                      validator:
-                          (v) =>
-                              v == null || v.trim().isEmpty
-                                  ? 'Введите адрес'
-                                  : null,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.location_on_outlined),
-                          onPressed: _pickLocation,
+                    TextButton(
+                      onPressed: () {
+                        _showShadow();
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'отменить',
+                        style: TextStyle(
+                          fontSize: FontSizes.buttons,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                    SizedBox(height: 16.h),
-                    Label('телефон', fontSize: 12),
-                    TextFormField(
-                      controller: _phone,
-                      keyboardType: TextInputType.phone,
-                    ),
-                    SizedBox(height: 24.h),
-                    Label('специализация', fontSize: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children:
-                          _specs.entries
-                              .map(
-                                (e) => Padding(
-                                  padding: EdgeInsets.only(bottom: 8.h),
-                                  child: _CheckLine(
-                                    label: e.key,
-                                    value: e.value,
-                                    onChanged:
-                                        (v) =>
-                                            setState(() => _specs[e.key] = v),
-                                  ),
-                                ),
-                              )
-                              .toList(),
+                    ElevatedButton(
+                      onPressed: _save,
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10.h,
+                          horizontal: 16.w,
+                        ),
+                        shape: const StadiumBorder(),
+                      ),
+                      child: Text(
+                        'сохранить',
+                        style: TextStyle(
+                          fontSize: FontSizes.buttons,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(
-                      'отменить',
-                      style: TextStyle(
-                        fontSize: FontSizes.buttons,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _save,
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 10.h,
-                        horizontal: 16.w,
-                      ),
-                      shape: const StadiumBorder(),
-                    ),
-                    child: Text(
-                      'сохранить',
-                      style: TextStyle(
-                        fontSize: FontSizes.buttons,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

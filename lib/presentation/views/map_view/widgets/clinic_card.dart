@@ -51,6 +51,7 @@ class ClinicCard extends ConsumerWidget {
                   clinic: clinic,
                   onEdit: edit,
                   onDelete: delete,
+                  ref: ref,
                 ),
               ),
               Text(

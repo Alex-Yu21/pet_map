@@ -14,6 +14,7 @@ class RootView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final index = ref.watch(navIndexProvider);
+    final showShadow = ref.watch(navBarShadowProvider);
 
     return Container(
       color: Colors.white,
@@ -40,13 +41,16 @@ class RootView extends ConsumerWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha((0.08 * 255).round()),
-                    blurRadius: 8,
-                    offset: const Offset(0, -4),
-                  ),
-                ],
+                boxShadow:
+                    showShadow
+                        ? [
+                          BoxShadow(
+                            color: Colors.black.withAlpha((0.08 * 255).round()),
+                            blurRadius: 8,
+                            offset: const Offset(0, -4),
+                          ),
+                        ]
+                        : [],
               ),
               child: NavigationBar(
                 height: 64,
