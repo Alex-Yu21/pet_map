@@ -132,7 +132,7 @@ class _AddClinicViewState extends ConsumerState<AddClinicView> {
                 child: ListView(
                   padding: EdgeInsets.all(16.w),
                   children: [
-                    Label('название'),
+                    Label('название', fontSize: 12),
                     TextFormField(
                       controller: _name,
                       validator:
@@ -142,7 +142,7 @@ class _AddClinicViewState extends ConsumerState<AddClinicView> {
                                   : null,
                     ),
                     SizedBox(height: 16.h),
-                    Label('адрес'),
+                    Label('адрес', fontSize: 12),
                     TextFormField(
                       controller: _addr,
                       validator:
@@ -158,13 +158,13 @@ class _AddClinicViewState extends ConsumerState<AddClinicView> {
                       ),
                     ),
                     SizedBox(height: 16.h),
-                    Label('телефон'),
+                    Label('телефон', fontSize: 12),
                     TextFormField(
                       controller: _phone,
                       keyboardType: TextInputType.phone,
                     ),
                     SizedBox(height: 24.h),
-                    Label('специализация'),
+                    Label('специализация', fontSize: 12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children:
