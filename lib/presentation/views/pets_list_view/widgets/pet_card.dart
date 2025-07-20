@@ -56,7 +56,7 @@ class PetCard extends ConsumerWidget {
               ),
             ),
             ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(4),
               child: AspectRatio(aspectRatio: 5 / 3, child: petImage()),
             ),
             SizedBox(height: Paddings.m),

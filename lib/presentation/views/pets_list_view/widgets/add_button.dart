@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pet_map/presentation/resources/app_colors.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/add_pet_view/add_pet_view.dart';
@@ -12,12 +13,12 @@ class AddButton extends StatelessWidget {
     return Material(
       color: AppColors.background,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(64),
+        borderRadius: BorderRadius.circular(40),
         side: const BorderSide(color: AppColors.secondary, width: 2),
       ),
       clipBehavior: Clip.hardEdge,
       child: InkWell(
-        borderRadius: BorderRadius.circular(64),
+        borderRadius: BorderRadius.circular(40),
         splashColor: AppColors.secondary.withAlpha((0.15 * 255).round()),
         highlightColor: Colors.transparent,
         onTap:
@@ -29,14 +30,14 @@ class AddButton extends StatelessWidget {
           width: double.infinity,
           height: 120.h,
           child: Center(
-            child: Container(
+            child: SizedBox(
               width: IconSizes.xxl,
               height: IconSizes.xxl,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.secondary, width: 8),
+              child: SvgPicture.asset(
+                'assets/icons/add_circle.svg',
+                color: AppColors.secondary,
+                fit: BoxFit.contain,
               ),
-              child: Icon(Icons.add, size: 64.h, color: AppColors.secondary),
             ),
           ),
         ),
