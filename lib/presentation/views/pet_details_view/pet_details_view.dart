@@ -52,7 +52,6 @@ class PetDetailsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // callbacks меню
     void openEdit() => Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => AddPetView(initialPet: pet)),
@@ -97,18 +96,18 @@ class PetDetailsView extends ConsumerWidget {
                         ),
                       ),
                       SizedBox(height: Paddings.m),
-                      const Label('Кличка'),
+                      const Label('Кличка', bottomPadding: 0),
                       Label(pet.name),
                       SizedBox(height: Paddings.m),
-                      const Label('Дата  рождения'),
+                      const Label('Дата  рождения', bottomPadding: 0),
                       Label(
                         pet.birthDate == null ? '' : _ruDate(pet.birthDate!),
                       ),
                       SizedBox(height: Paddings.m),
-                      const Label('Порода'),
+                      const Label('Порода', bottomPadding: 0),
                       Label(pet.breed ?? ''),
                       SizedBox(height: Paddings.m),
-                      const Label('Стерилизация'),
+                      const Label('Стерилизация', bottomPadding: 0),
                       Label(pet.isSterilized ? 'да' : 'нет'),
                     ],
                   ),

@@ -4,12 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class Label extends StatelessWidget {
   final String text;
   final double fontSize;
+  final double bottomPadding;
   final FontWeight fontWeight;
   final Color? color;
 
   const Label(
     this.text, {
     this.fontSize = 16,
+    this.bottomPadding = 4,
     this.fontWeight = FontWeight.normal,
     this.color,
     super.key,
@@ -17,7 +19,7 @@ class Label extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 4),
+    padding: EdgeInsets.only(bottom: bottomPadding),
     child: Text(
       text,
       style: TextStyle(
