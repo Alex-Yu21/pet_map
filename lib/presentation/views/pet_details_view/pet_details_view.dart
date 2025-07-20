@@ -86,6 +86,7 @@ class PetDetailsView extends ConsumerWidget {
                           pet: pet,
                           onEdit: openEdit,
                           onDelete: delete,
+                          ref: ref,
                         ),
                       ),
                       ClipRRect(

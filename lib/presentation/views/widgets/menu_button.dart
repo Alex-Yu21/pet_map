@@ -15,15 +15,15 @@ class MenuButton extends StatelessWidget {
   final VetClinic? clinic;
   final OnEdit onEdit;
   final OnDelete onDelete;
-  final WidgetRef? ref;
+  final WidgetRef ref;
 
   const MenuButton.pet({
     super.key,
     required this.pet,
     required this.onEdit,
     required this.onDelete,
-  }) : clinic = null,
-       ref = null;
+    required this.ref,
+  }) : clinic = null;
 
   const MenuButton.clinic({
     super.key,
@@ -78,8 +78,7 @@ class MenuButton extends StatelessWidget {
   }
 
   Future<void> _openMenu(BuildContext context) async {
-    ref?.read(navBarShadowProvider.notifier).state = false;
-
+    ref.read(navBarShadowProvider.notifier).state = false;
     await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -88,7 +87,7 @@ class MenuButton extends StatelessWidget {
             padding: EdgeInsets.all(Paddings.l),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -119,8 +118,7 @@ class MenuButton extends StatelessWidget {
             ),
           ),
     );
-
-    ref?.read(navBarShadowProvider.notifier).state = true;
+    ref.read(navBarShadowProvider.notifier).state = true;
   }
 
   @override

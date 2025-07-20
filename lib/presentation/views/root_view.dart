@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pet_map/presentation/providers/nav_ui_providers.dart';
 import 'package:pet_map/presentation/resources/app_dimansions.dart';
 import 'package:pet_map/presentation/views/map_view/map_view.dart';
-import 'package:pet_map/presentation/views/pets_list_view/pets_view.dart';
+import 'package:pet_map/presentation/views/pets_list_view/pets_list_view.dart';
 
 final _navKeys = [GlobalKey<NavigatorState>(), GlobalKey<NavigatorState>()];
 
@@ -32,7 +32,8 @@ class RootView extends ConsumerWidget {
               Navigator(
                 key: _navKeys[1],
                 onGenerateRoute:
-                    (_) => MaterialPageRoute(builder: (_) => const PetsView()),
+                    (_) =>
+                        MaterialPageRoute(builder: (_) => const PetsListView()),
               ),
             ],
           ),
