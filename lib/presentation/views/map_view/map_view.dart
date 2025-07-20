@@ -223,8 +223,11 @@ class _MapViewState extends ConsumerState<MapView>
                         ),
                       ),
                   style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
-                  icon: const Icon(Icons.add, color: Colors.white),
-                  label: const Text('добавить клинику'),
+                  icon: Icon(Icons.add, color: Colors.white, size: 24.w),
+                  label: Text(
+                    'добавить клинику',
+                    style: TextStyle(fontSize: 20.sp),
+                  ),
                 ),
               ),
             ),

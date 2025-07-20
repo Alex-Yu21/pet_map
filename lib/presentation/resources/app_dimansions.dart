@@ -6,13 +6,13 @@ class Paddings {
   static double get s => 8.5.w;
   static double get m => 12.w;
   static double get l => 16.w;
-  static double get xl => 61.5.w;
+  static double get xl => 62.w;
 }
 
 class IconSizes {
   static double get xs => 10.5.w;
   static double get s => 11.67.w;
-  static double get m => 18.w;
+  static double get m => 15.w;
   static double get l => 20.w;
   static double get xl => 48.w;
   static double get xxl => 80.w;
