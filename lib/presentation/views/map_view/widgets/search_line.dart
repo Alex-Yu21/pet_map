@@ -16,7 +16,7 @@ class SearchLine extends ConsumerWidget {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.symmetric(
-        horizontal: Paddings.l,
+        horizontal: Paddings.xs,
         vertical: Paddings.s,
       ),
       child: Row(
@@ -70,12 +70,11 @@ class SearchLine extends ConsumerWidget {
               ),
             ),
           ),
-          SizedBox(width: 12.w),
           InkWell(
             onTap: onFilterTap,
             borderRadius: BorderRadius.circular(24.w),
             child: Container(
-              width: 48.w,
+              width: 40.w,
               height: 48.w,
               alignment: Alignment.center,
               child: Icon(Icons.tune, color: AppColors.primary, size: 24.w),
