@@ -11,9 +11,9 @@ import 'package:pet_map/presentation/views/add_pet_view/add_pet_view.dart';
 import 'package:pet_map/presentation/views/widgets/label.dart';
 import 'package:pet_map/presentation/views/widgets/menu_button.dart';
 
-class PetView extends ConsumerWidget {
+class PetDetailsView extends ConsumerWidget {
   final Pet pet;
-  const PetView({super.key, required this.pet});
+  const PetDetailsView({super.key, required this.pet});
 
   Widget _petImage() {
     if (pet.photoPath?.isNotEmpty == true) {
