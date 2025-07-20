@@ -35,6 +35,7 @@ class MenuButton extends StatelessWidget {
 
   Future<void> _confirmDelete(BuildContext context) async {
     final bool? confirmed = await showModalBottomSheet<bool>(
+      barrierColor: const Color(0x33000000),
       context: context,
       builder:
           (ctx) => Container(
@@ -80,8 +81,8 @@ class MenuButton extends StatelessWidget {
   Future<void> _openMenu(BuildContext context) async {
     ref.read(navBarShadowProvider.notifier).state = false;
     await showModalBottomSheet(
+      barrierColor: const Color(0x33000000),
       context: context,
-      backgroundColor: Colors.transparent,
       builder:
           (ctx) => Container(
             padding: EdgeInsets.all(Paddings.l),
